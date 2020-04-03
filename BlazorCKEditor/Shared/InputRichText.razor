@@ -4,7 +4,7 @@
 @{ 
 /*
 
-IMPORTANT: This component should be called inside EditForm   
+IMPORTANT: This component should be called inside an EditForm   
 */
 }
 
@@ -22,6 +22,11 @@ IMPORTANT: This component should be called inside EditForm
         get => _id ?? $"CKEditor_{uid}";
         set => _id = value;
     }
+
+
+    [Parameter] 
+    public EventCallback<string> OnSave { get; set; }
+
 
     readonly string uid = Guid.NewGuid().ToString().ToLower().Replace("-", "");
 
@@ -45,6 +50,12 @@ IMPORTANT: This component should be called inside EditForm
         CurrentValue = data;
         StateHasChanged();
         return Task.CompletedTask;
+    }
+
+    [JSInvokable]
+    public async Task EditorAutoSave(string data)
+    {
+        await OnSave.InvokeAsync(data);
     }
 
     protected override void Dispose(bool disposing)

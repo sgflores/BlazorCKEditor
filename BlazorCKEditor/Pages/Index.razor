@@ -5,6 +5,8 @@
     <div class="col-md-6">
 
         <h3>CKEditor</h3>
+
+        <hr />
            
         <!--Requires  EditForm to call InputRichText component-->
         <EditForm Model="@_exampleModel" OnValidSubmit="HandleValidSubmit">
@@ -12,32 +14,56 @@
             <ValidationSummary />
 
 
-            <InputRichText @bind-Value="@_exampleModel.Name"></InputRichText>
+            <InputRichText OnSave="OnSave" @bind-Value="@_exampleModel.Content"></InputRichText>
 
-            <br />
-            <button class="btn btn-primary" type="submit">Submit</button>
+            <!--Call another editor-->
+            <!--<InputRichText OnSave="" @bind-Value="@_exampleModel.Address"></InputRichText>-->
+
+            <!--<button class="btn btn-primary" type="submit">Submit</button>-->
 
         </EditForm>
     </div>
 
     <div class="col-md-6">
         <h3>Output</h3>
-        @((MarkupString)@_exampleModel.Name)
+        <hr />
+        <div id="editor-status" class="saved alert">
+            Saving...
+        </div>
+        @((MarkupString)@Content)
     </div>
 
 </div>
 
+<style>
+    .saved {
+        display: none;
+    }
+</style>
+
 
 @code {
     private ExampleModel _exampleModel = new ExampleModel();
+
+    private string Content = "";
+
+    private string Css = "alert";
 
     private void HandleValidSubmit()
     {
         Console.WriteLine("OnValidSubmit");
     }
 
+    private async Task OnSave(string data)
+    {
+        await Task.Delay(1);
+        Content = data;
+    }
+
     class ExampleModel
     {
-        public string Name { get; set; } = "Hello!";
+        public string Content { get; set; } = "CKEditor 5 allows you to retrieve the data from and save it to your " +
+                "server (or to your system in general) in various ways. " +
+                "In this guide you can learn about the available options along with their pros and cons.";
     }
 }
